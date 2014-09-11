@@ -38,7 +38,7 @@ With Maven:
 
 ## Usage and documentation
 
-Except when only using client related code (see [online.clj](doc/clj-vw/clj-vw.online.html)), this
+Except when only using client related code (see [online.clj](src/clj_vw/online.clj)), this
 library requires that vowpal wabbit is installed in the usual way.  Basic knowledge of vowpal
 wabbit, its [command line
 options](https://github.com/JohnLangford/vowpal_wabbit/wiki/Command-line-arguments) and [input
@@ -54,24 +54,44 @@ files will be put under `doc`. There are three namespaces.
 Core functionality for interacting with vowpal wabbit in a generic way (input example formatting,
 writing data files, passing options and calling vw, ...)
 
-* `(available-options)
-  Print and return the set of available options+documentation.
+All functions work on a `settings` argument, which is basically a map containing vowpal wabbit
+options, training examples, etc. Options are set by calling `set-option`. Finally, vowpal wabbit is
+called by calling the function `vw` on settings.
+
+Example:
+
+```
+(-> (set-option :data "foo/bar.dat"
+    		:final-regressor "foo/bar.model"
+               	:save-resume true
+		:ngram 3
+		:quadratic "ab"
+		:learning-rate 0.3)
+    (vw))
+```
+
+* `(available-options)`
+
+Print and return the set of available options+documentation.
 
 * `(add-example settings example & more)`
-  Add one ore more examples to settings.
+
+Add one ore more examples to settings.
 
 * `(format-example {:keys [label labels importance tag features])`
-  Turns an example given as a map into vowpal wabbit's string format (see https://github.com/JohnLangford/vowpal_wabbit/wiki/Input-format).
 
-  ```
+Turns an example given as a map into vowpal wabbit's string format (see
+https://github.com/JohnLangford/vowpal_wabbit/wiki/Input-format).
+
+```
   (format-example {:label -1.231
                    :features ["f1"
                               {:name "f2" :value 3.5}
                               {:name "f3" :namespace "ns3"}]})
    => "-1.231 | f1 f2:3.5 |ns3:1.0 f3"
-  ```
+```
 
-  See test suite for more examples.
+See test suite for more examples.
 
 * `(get-option settings key)`
   Return option for `key` in `settings`.

@@ -34,7 +34,7 @@
              (write-data-file settings))
          settings))))
 
-(defn maybe-set-predictions-file [settings]
+(defn- maybe-set-predictions-file [settings]
   (if (get-option settings :predictions)
     settings
     (let [tmp-file (str "/tmp/.vw-temp-predictions." (java.util.UUID/randomUUID))]
@@ -53,14 +53,22 @@
 ;;; Public API
 ;;; ==========
 
-(defn train [settings]
+(defn train 
+  "Train a vowpal wabbit model from a data file (as specified by (get-option settings :data)) or from a
+  collection of in memory examples (as specified by (:data settings))."
+  [settings]
   (-> settings
       (maybe-write-data-file)
       (vw)
       (cleanup-tmp-files)
       (assoc :options (:options settings))))
 
-(defn predict [settings]
+(defn predict 
+  "Use an existing vowpal wabbit model (as specified by (get-option
+  settings :initial-regressor))or (get-option settings :final-regressor), in that order) to compute
+  predictions for examples in a data file (as specified by (get-option settings :data)) or in
+  memory (as spefified by (:data settings))."
+  [settings]
   (-> settings
       (maybe-write-data-file)
       (maybe-set-predictions-file)

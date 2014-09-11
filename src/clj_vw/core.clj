@@ -8,7 +8,7 @@
 ;; You must not remove this notice, or any other, from this software.
 
 (ns ^{:doc "Core functionality for interacting with vowpal wabbit in a generic way (input example
-formatting, writing data files, passing options and calling vw, ...)"} 
+formatting, writing data files, passing options and calling vw, ...)."} 
   clj-vw.core
   (:require [clojure.java [shell :refer [sh]] [io :refer :all]]
             [clojure.pprint :refer (print-table)])
@@ -40,7 +40,7 @@ formatting, writing data files, passing options and calling vw, ...)"}
 
 (def ^{:private true} +options+ (atom []))
 
-(defmacro defoption [key {:keys [short-name long-name] :as cfg}]
+(defmacro ^{:private true} defoption [key {:keys [short-name long-name] :as cfg}]
   (assert (or short-name long-name))
   `(swap! +options+ conj (assoc ~cfg 
                            :key ~key)))
@@ -57,7 +57,10 @@ formatting, writing data files, passing options and calling vw, ...)"}
               ret))
           [] options))
 
-(defmacro assert-options [settings & option-keys]
+(defmacro assert-options
+  "Macro for performing multiple asserts of the form (assert (get-option settings key))
+  simulataneously."
+  [settings & option-keys]
   `(do ~@(map (fn [key]
                 `(assert (get-option ~settings ~key)))
               option-keys)))
@@ -600,6 +603,8 @@ Example:
                                {:name \"f2\" :value 3.5}
                                {:name \"f3\" :namespace \"ns3\"}]})
    => \"-1.231 | f1 f2:3.5 |ns3:1.0 f3\"
+
+  See test suite for more examples.
 "
   (str (if label          
          (format-label label)
@@ -619,6 +624,7 @@ Example:
                                     (group-by :namespace features)))))
 
 (defn add-example 
+  "Add one ore more examples to settings."
   ([settings example]
      (update-in settings [:data] (fnil conj []) example))
   ([settings example & more]
@@ -634,12 +640,12 @@ Example:
   "Set one or more options. Can be chained, e.g.
 
   (def settings (-> {}
-               (set-option :data \"foo/bar.dat\")
-               (set-option :save-resume true)
-               (set-option :ngram 3)
-               (set-option :quadratic \"ab\")
-               (set-option :quadratic \"ac\")
-               (set-option :learning-rate 0.3)))
+                    (set-option :data \"foo/bar.dat\")
+                    (set-option :save-resume true)
+                    (set-option :ngram 3)
+                    (set-option :quadratic \"ab\")
+                    (set-option :quadratic \"ac\")
+                    (set-option :learning-rate 0.3)))
 "
   ([key val]
      (set-option {} key val))
@@ -658,7 +664,7 @@ Example:
                          (:options settings)))))
 
 (defn maybe-set-option 
-  "Same as set-option but only when (get-option settings key) returns nil."
+  "Same as set-option but only when option is unset."
   ([settings key]
      (set-option settings key true))
   ([settings key val]
@@ -672,6 +678,7 @@ Example:
              (partition 2 more))))
 
 (defn remove-option 
+  "Remove an option from settings."
   ([settings key]
      (update-in settings [:options]
                 #(remove (fn [opt] (= key (first opt))) %)))
@@ -695,7 +702,8 @@ Example:
      settings))
 
 (defn vw-command 
-  "Returns the vw command as a string as defined by settings."
+  "Returns the vw command as a string as defined by settings. Useful for inspecting the command that
+  wille be issued when calling vw on settings."
   [settings]
   (str "vw " (clojure.string/join " " (command-line-args (:options settings)))))
 
@@ -711,7 +719,9 @@ Example:
       (throw (Exception. "vowpal wabbit segmentation fault")))))
 
 
-(defn read-predictions [settings]
+(defn read-predictions 
+  "Read vowpal wabbit prediction file as specified by (get-option settings :predictions)."
+  [settings]
   (let [predictions (with-open [rdr (clojure.java.io/reader (get-option settings :predictions))]
                       (doall (mapv #(hash-map :label (read-string %)
                                               :tag (second (clojure.string/split % #" ")))

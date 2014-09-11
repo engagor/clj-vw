@@ -28,7 +28,8 @@ vowpal wabbit running in daemon mode."}
 ;;; ==========
 
 (defn vw-daemon
-  "Start a vw daemon."
+  "Start a vw daemon. Port (and any other options) can be set via vw options,
+  e.g. (vw-daemon (set-option :port 8003))."
   ([] (vw-daemon {}))
   ([settings]
      (let [settings (maybe-set-option settings 
@@ -49,7 +50,20 @@ vowpal wabbit running in daemon mode."}
                  (throw (Exception. "Unable to launch vw daemon.")))))))))
 
 (defn connect 
-  "Connect to a vw daemon."
+  "Connect to a vw daemon. 
+
+   Host is determined as the value of either (get-in settings [:client :host]), (get-in
+  settings [:daemon :host]) or \"localhost\", in this order.
+
+  Port is determined as the value of either (get-in settings [:client :port]), (get-in
+  settings [:daemon :port]), (get-option settings :port) or 26542 in this order.
+
+  Example, to start a local daemon on port 8003 and connect to it, do:
+
+      (-> (set-option :port 8003) 
+          (vw-daemon) 
+          (connect)).
+"
   [settings]
   (let [host (or (get-in settings [:client :host])
                  (get-in settings [:daemon :host]) 
@@ -69,7 +83,9 @@ vowpal wabbit running in daemon mode."}
         (assoc-in [:client :port] port))))
 
 (defn train
-  "Send examples to a vw daemon for training. Examples are extended with a :prediction slot."
+  "Send examples to a vw daemon connection (as returned by connect) for training. Examples in the
+  return settings are extended with a :prediction slot corresponding to vowpal wabbit's prediction
+  before training."
   [settings]  
   (assoc settings :data
          (doall 
@@ -81,7 +97,7 @@ vowpal wabbit running in daemon mode."}
                (:data settings)))))
 
 (defn predict
-  "Send examples to a vw daemon for prediction (without training). Predictions are put
+  "Send examples to a vw daemon connection for prediction (without training). Predictions are put
   under :predictions in settings."
   [settings]  
   (assoc settings :predictions

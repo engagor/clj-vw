@@ -58,7 +58,7 @@ All functions work on a `settings` argument, which is basically a map containing
 options, training examples, etc. Options are set by calling `set-option`. Finally, vowpal wabbit is
 called by calling the function `vw` on settings.
 
-Example:
+#### Example:
 
 ```
 (-> (set-option :data "foo/bar.dat"
@@ -69,6 +69,8 @@ Example:
 		:learning-rate 0.3)
     (vw))
 ```
+
+#### Full list of available functions:
 
 * `(available-options)`
 

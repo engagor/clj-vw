@@ -23,7 +23,7 @@ If you are using Maven, add the following repository definition to your pom.xml:
 With Leiningen:
 
 ```
-[engagor/clj-vw "1.0.0-RC1"]
+[engagor/clj-vw "1.0.0-RC3"]
 ```
 
 With Maven:
@@ -32,14 +32,14 @@ With Maven:
 <dependency>
   <groupId>engagor</groupId>
   <artifactId>clj-vw</artifactId>
-  <version>1.0.0-RC1</version>
+  <version>1.0.0-RC3</version>
 </dependency>
 ```
 
 ## Usage and documentation
 
 Except when only using client related code for connecting to a remote vw daemon (see
-[online.clj](src/clj_vw/online.clj)), this library requires that vowpal wabbit is installed localy.
+[online.clj](src/clj_vw/online.clj)), this library requires that vowpal wabbit is installed locally.
 Basic knowledge of vowpal wabbit, its [command line
 options](https://github.com/JohnLangford/vowpal_wabbit/wiki/Command-line-arguments) and [input
 format](https://github.com/JohnLangford/vowpal_wabbit/wiki/Input-format) are recommended. See the
@@ -100,7 +100,7 @@ called by calling the function `vw` on prepared settings.
 
 * `(remove-option settings key & more)`
 
-  Remove option `key` from `setings`.
+  Remove option `key` from `settings`.
 
 * `(add-example settings example & more)`
 
@@ -144,13 +144,13 @@ called by calling the function `vw` on prepared settings.
 
 ### [offline.clj](src/clj_vw/offline.clj)
     
-Higher level helper functions for interfacing to a local vowpal wabbit installation.
+Higher level helper functions for interfacing to a local vowpal wabbit install.
 
 * `(predict settings)`
 
   Use an existing vowpal wabbit model (as specified by `(get-option settings :initial-regressor)` or
   `(get-option settings :final-regressor)`, in that order) to compute predictions for examples in a
-  data file (as specified by `(get-option settings :data)`) or in memory (as spefified by `(:data
+  data file (as specified by `(get-option settings :data)`) or in memory (as specified by `(:data
   settings)`).
 
 * `(train settings)`

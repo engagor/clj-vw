@@ -11,24 +11,30 @@ clj-vw artifacts are released to Clojars.
 
 If you are using Maven, add the following repository definition to your pom.xml:
 
+```
 <repository>
   <id>clojars.org</id>
   <url>http://clojars.org/repo</url>
 </repository>
+```
 
 ## The Most Recent Release
 
 With Leiningen:
 
+```
 [engagor/clj-vw "1.0.0-RC1"]
+```
 
 With Maven:
 
+```
 <dependency>
   <groupId>engagor</groupId>
   <artifactId>clj-vw</artifactId>
   <version>1.0.0-RC1</version>
 </dependency>
+```
 
 ## Usage and documentation
 
@@ -63,7 +69,7 @@ directory `"/tmp/"` is read/writable.
 
 ## License
 
-Copyright © 2014 Engagor, Joachim De Beule
+Copyright © 2014 Engagor
 
 Distributed under the BSD Clause-2 License as distributed in the file [LICENSE.md](LICENSE.md) at
 the root of this repository.

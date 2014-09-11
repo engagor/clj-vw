@@ -67,7 +67,11 @@ called by calling the function `vw` on settings.
 		:ngram 3
 		:quadratic "ab"
 		:learning-rate 0.3)
-    (vw))
+    (add-example {:label 1, :features ["a"]}
+                 {:label -1, :features ["b"]})
+    (write-data-file)
+    (vw)
+    (read-predictions))
 ```
 
 #### Full list of available functions:
@@ -75,6 +79,28 @@ called by calling the function `vw` on settings.
 * `(available-options)`
 
 Print and return the set of available options+documentation.
+
+* `(set-option settings key val & more)`
+
+Set one or more options. Can be chained, e.g.
+
+```
+(def settings (-> {}
+                  (set-option :data "foo/bar.dat")
+                  (set-option :save-resume true)
+                  (set-option :ngram 3)
+                  (set-option :quadratic "ab")
+                  (set-option :quadratic "ac")
+                  (set-option :learning-rate 0.3)))
+```
+
+* `(get-option settings key)`
+
+Return option for `key` in `settings`.
+
+* (remove-option settings key & more)
+
+Remove option `key` from `setings`.
 
 * `(add-example settings example & more)`
 
@@ -93,42 +119,28 @@ https://github.com/JohnLangford/vowpal_wabbit/wiki/Input-format).
    => "-1.231 | f1 f2:3.5 |ns3:1.0 f3"
 ```
 
-See test suite for more examples.
+See [core_test.clj](test/clj-vw/core_test.clj) suite for more examples.
 
-* `(get-option settings key)`
-  Return option for `key` in `settings`.
 
 * `(read-predictions settings)`
-  Read vowpal wabbit prediction file `(get-option settings :predictions)`.
 
-* (remove-option settings key & more)
-  Remove option `key` from `setings`.
-
-* `(set-option settings key val & more)`
-  Set one or more options. Can be chained, e.g.
-
-  ```
-  (def settings (-> {}
-                    (set-option :data "foo/bar.dat")
-                    (set-option :save-resume true)
-                    (set-option :ngram 3)
-                    (set-option :quadratic "ab")
-                    (set-option :quadratic "ac")
-                    (set-option :learning-rate 0.3)))
-  ```
-
-* `(vw settings)`
-  Calls vw as specified by `settings`. Puts output in `settings` under `:output` and returns
-  updated settings.
-
-* `(vw-command settings)`
-  Returns the vw command as a string as defined by `settings`. Useful for inspecting the command that
-  will be issued when calling `vw` on `settings`.
+Read vowpal wabbit prediction file `(get-option settings :predictions)`.
 
 * `(write-data-file settings & {:as writer-settings})`
-  Writes `(:data settings)`, a collection of examples, to `(get-option settings :data)`.
 
-More examples are available in [core_test.clj](test/clj-vw/core_test.clj).
+Writes `(:data settings)`, a collection of examples, to `(get-option settings :data)`.
+
+* `(vw-command settings)`
+
+  Returns the vw command as a string as defined by `settings`. Useful for inspecting the command
+  that will be issued when calling `vw` on `settings`.
+
+* `(vw settings)`
+
+Calls vw as specified by `settings`. Puts output in `settings` under `:output` and returns
+updated settings.
+
+More info in [core_test.clj](test/clj-vw/core_test.clj).
 
 ### [offline.clj](src/clj-vw/offline.clj)
     
@@ -136,62 +148,61 @@ Higher level helper functions for interfacing to a local vowpal wabbit installat
 
 * `(predict settings)`
 
-  Use an existing vowpal wabbit model (as specified by `(get-option settings :initial-regressor)` or
-  `(get-option settings :final-regressor)`, in that order) to compute predictions for examples in a
-  data file (as specified by `(get-option settings :data)`) or in memory (as spefified by `(:data
-  settings)`).  
+Use an existing vowpal wabbit model (as specified by `(get-option settings :initial-regressor)` or
+`(get-option settings :final-regressor)`, in that order) to compute predictions for examples in a
+data file (as specified by `(get-option settings :data)`) or in memory (as spefified by `(:data
+settings)`).
 
 * `(train settings)`
 
-   Train a vowpal wabbit model from a data file (as specified by `(get-option settings :data)`) or
-   from a collection of in memory examples (as specified by `(:data settings)`).
+Train a vowpal wabbit model from a data file (as specified by `(get-option settings :data)`) or from
+a collection of in memory examples (as specified by `(:data settings)`).
 
 ### [online.clj](src/clj-vw/online.clj)
 
 Higher level helper functions for launching and connecting to a (local or remote) vowpal wabbit
 running in daemon mode.
 
-* `(close settings)`
+* `(daemon & {:as settings})`
 
-  Close daemon and/or client and cleanup.
+Start a vw daemon. Port (and any other options) can be set via vw options, e.g. `(vw-daemon
+(set-option :port 8003))`.
 
 * `(connect settings)`
 
-  Connect to a vw daemon. 
+Connect to a vw daemon. 
 
-  Host is determined as the value of either `(get-in settings [:client :host])`, `(get-in
-  settings [:daemon :host])` or `"localhost"`, in this order.
+Host is determined as the value of either `(get-in settings [:client :host])`, `(get-in
+settings [:daemon :host])` or `"localhost"`, in this order.
 
-  Port is determined as the value of either `(get-in settings [:client :port])`, `(get-in
-  settings [:daemon :port])`, `(get-option settings :port)` or `26542`, in this order.
+Port is determined as the value of either `(get-in settings [:client :port])`, `(get-in
+settings [:daemon :port])`, `(get-option settings :port)` or `26542`, in this order.
 
-  Example, to start a local daemon on port 8003 and connect to it, do:
+Example, to start a local daemon on port 8003 and connect to it, do:
 
-  ```
-    (-> (set-option :port 8003) 
-        (vw-daemon) 
-        (connect)).
-  ```
+```
+  (-> (set-option :port 8003) 
+      (vw-daemon) 
+      (connect)).
+```
+* `(train settings)`
 
-* (predict settings)
-
-  Send examples to a vw daemon connection for prediction (without training). Predictions are put
-  under `:predictions` in `settings`.
+Send examples to a vw daemon connection (as returned by `connect`) for training. Examples in the
+return settings (under `:data`) are extended with a `:prediction` slot corresponding to vowpal
+wabbit's prediction before training.
 
 * (save settings)
 
-  Save daemon's model to `(get-opt settings :final-regressor)`.
+Save daemon's model to `(get-opt settings :final-regressor)`.
 
-* `(train settings)`
+* (predict settings)
 
-  Send examples to a vw daemon connection (as returned by `connect`) for training. Examples in the
-  return settings (under `:data`) are extended with a `:prediction` slot corresponding to vowpal
-  wabbit's prediction before training.  
+Send examples to a vw daemon connection for prediction (without training). Predictions are put under
+`:predictions` in `settings`.
 
-* `(vw-daemon & {:as settings})`
+* `(close settings)`
 
-  Start a vw daemon. Port (and any other options) can be set via vw options, e.g. `(vw-daemon (set-option :port
-  8003))`.
+Close daemon and/or client and cleanup.
 
 ## Testing
 
@@ -202,5 +213,5 @@ directory `"/tmp/"` is read/writable.
 
 Copyright © 2014 Engagor
 
-Distributed under the BSD Clause-2 License as distributed in the file [LICENSE.md](LICENSE.md) at
+Distributed under the BSD Clause-2 License as distributed in the file [LICENSE.md](LICENSE) at
 the root of this repository.

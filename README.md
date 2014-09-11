@@ -191,11 +191,11 @@ Send examples to a vw daemon connection (as returned by `connect`) for training.
 return settings (under `:data`) are extended with a `:prediction` slot corresponding to vowpal
 wabbit's prediction before training.
 
-* (save settings)
+* `(save settings)`
 
 Save daemon's model to `(get-opt settings :final-regressor)`.
 
-* (predict settings)
+* `(predict settings)`
 
 Send examples to a vw daemon connection for prediction (without training). Predictions are put under
 `:predictions` in `settings`.
@@ -213,5 +213,5 @@ directory `"/tmp/"` is read/writable.
 
 Copyright © 2014 Engagor
 
-Distributed under the BSD Clause-2 License as distributed in the file [LICENSE.md](LICENSE) at
+Distributed under the BSD Clause-2 License as distributed in the file [LICENSE](LICENSE) at
 the root of this repository.

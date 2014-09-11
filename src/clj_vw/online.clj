@@ -27,10 +27,10 @@ vowpal wabbit running in daemon mode."}
 ;;; Public API
 ;;; ==========
 
-(defn vw-daemon
+(defn daemon
   "Start a vw daemon. Port (and any other options) can be set via vw options,
-  e.g. (vw-daemon (set-option :port 8003))."
-  ([] (vw-daemon {}))
+  e.g. (daemon (set-option :port 8003))."
+  ([] (daemon {}))
   ([settings]
      (let [settings (maybe-set-option settings 
                                       :daemon true
@@ -61,7 +61,7 @@ vowpal wabbit running in daemon mode."}
   Example, to start a local daemon on port 8003 and connect to it, do:
 
       (-> (set-option :port 8003) 
-          (vw-daemon) 
+          (daemon) 
           (connect)).
 "
   [settings]

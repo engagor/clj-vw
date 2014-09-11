@@ -14,7 +14,8 @@
 
 (deftest online-test
 
-  (let [settings (connect (vw-daemon))]
+  ;; TODO: use fixtures
+  (let [settings (connect (daemon))]
 
     (testing "train"
       (is (= {:prediction 0.0, :features ["a"], :label 1, :tag "ex1"}

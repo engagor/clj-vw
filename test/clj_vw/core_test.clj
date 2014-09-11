@@ -55,13 +55,14 @@
     (is (= (set-option {} :data "foo/bar.dat")
            {:options [[:data "foo/bar.dat"]]}))
     (is (= (-> (set-option :data "foo/bar.dat")
-               (set-option :save-resume)
+               (set-option :save-resume true)
                (set-option :ngram 3)
                (set-option :quadratic "ab")
                (set-option :quadratic "ac")
                (set-option :learning-rate 0.3))
            {:options
-            [[{:options [[:data "foo/bar.dat"]]} :save-resume]
+            [[:data "foo/bar.dat"]
+             [:save-resume true]
              [:ngram 3]
              [:quadratic "ab"]
              [:quadratic "ac"]

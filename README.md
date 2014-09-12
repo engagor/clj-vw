@@ -165,7 +165,7 @@ Higher level helper functions for interfacing to a local vowpal wabbit install.
 
 * `(daemon & {:as settings})`
 
-  Start a vw daemon. Port (and any other options) can be set via vw options, e.g. `(vw-daemon
+  Start a vw daemon. Port (and any other options) can be set via vw options, e.g. `(daemon
   (set-option :port 8003))`.
 
 * `(connect settings)`
@@ -182,7 +182,7 @@ Higher level helper functions for interfacing to a local vowpal wabbit install.
 
   ```
   (-> (set-option :port 8003) 
-      (vw-daemon) 
+      (daemon) 
       (connect)).
   ```
 

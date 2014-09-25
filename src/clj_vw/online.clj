@@ -21,7 +21,9 @@ vowpal wabbit running in daemon mode."}
 (defn- locking-send-and-recieve [client message]
   (read-string 
    (locking client
-     (.println ^java.io.PrintWriter (:out client) message)
+     (doto ^java.io.PrintWriter (:out client)
+           (.println message)
+           (.flush))     
      (.readLine ^java.io.BufferedReader (:in client)))))
 
 ;;; Public API

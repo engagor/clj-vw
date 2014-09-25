@@ -23,7 +23,7 @@ If you are using Maven, add the following repository definition to your pom.xml:
 With Leiningen:
 
 ```
-[engagor/clj-vw "1.0.0-RC3"]
+[engagor/clj-vw "1.0.0-RC4"]
 ```
 
 With Maven:

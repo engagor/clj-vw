@@ -19,17 +19,27 @@ formatting, writing data files, passing options and calling vw, ...)."}
 ;;; Example Formatting
 ;;; ========================================================================
 
-(defn- format-namespace [x]
+(defn- ^java.lang.String clean-string
+  "replaces all occurrences of characters in #{\\:, \\space, \\newline, \\|} by a space."
+  [^java.lang.String input]
+  (clojure.string/replace input #"[\n|:]" " "))
+
+(defn- ^java.lang.String format-namespace [x]
   (if (map? x)
-    (str (:name x) (when (and (not (empty? (:name x))) (:weight x)) (str ":" (:weight x))))
+    (if-not (empty? (:name x))
+      (str (clean-string (:name x))
+           (when (:weight x) (str ":" (:weight x))))
+      "")
     (str x)))
 
-(defn- format-feature [x]
+(defn- ^java.lang.String format-feature [x]
   (if (map? x)
-    (str (:name x) (when (:value x) (str ":" (:value x))))
-    (str x)))
+    (if-not (empty? (:name x))
+      (str (clean-string (:name x)) (when (:value x) (str ":" (:value x))))
+      "")
+    (clean-string (str x))))
 
-(defn- format-label [x]
+(defn- ^java.lang.String format-label [x]
   (if (map? x)
     (str (:value x) (when (:cost x) (str ":" (:cost x))))
     (str x)))
@@ -612,7 +622,7 @@ Example:
        (when importance 
          (str " " importance))
        (when tag
-         (str " " tag))
+         (clean-string (str " " tag)))
        (clojure.string/trim (reduce (fn [ret [ns features]]
                                       (str ret  
                                            (apply str "|"

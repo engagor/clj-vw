@@ -7,7 +7,7 @@
 ;; the terms of this license.
 ;; You must not remove this notice, or any other, from this software.
 
-(defproject engagor/clj-vw "1.0.0-RC4"
+(defproject engagor/clj-vw "1.0.0-RC5"
   :description "Clojure client and wrapper for vowpal wabbit"
   :url "https://github.com/engagor/clj-vw"
   :license {:name "BSD C2"

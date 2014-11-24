@@ -78,4 +78,3 @@
       (read-predictions)
       (cleanup-tmp-files)
       (assoc :options (:options settings))))
-

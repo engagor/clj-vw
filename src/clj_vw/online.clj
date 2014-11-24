@@ -110,7 +110,7 @@ vowpal wabbit running in daemon mode."}
                           (:client settings) 
                           (format-example (assoc example 
                                             ;; :tag (or (:tag example) "dummy")
-                                            :importance 0 :labels [])))})
+                                            :label 1 :importance 0 :labels [])))})
                (:data settings)))))
 
 (defn save 

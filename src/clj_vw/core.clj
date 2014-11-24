@@ -676,15 +676,15 @@ Example:
 (defn maybe-set-option 
   "Same as set-option but only when option is unset."
   ([settings key]
-     (set-option settings key true))
+     (maybe-set-option settings key true))
   ([settings key val]
      (if (nil? (get-option settings key))
-       settings
-       (update-in settings [:options] (fnil conj []) [key val])))
+       (update-in settings [:options] (fnil conj []) [key val])
+       settings))
   ([settings key val & more]
      (reduce (fn [ret [key val]]
-               (set-option ret key val))
-             (set-option settings key val)
+               (maybe-set-option ret key val))
+             (maybe-set-option settings key val)
              (partition 2 more))))
 
 (defn remove-option 

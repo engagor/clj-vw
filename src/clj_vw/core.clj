@@ -660,7 +660,7 @@ Example:
   ([key val]
      (set-option {} key val))
   ([settings key val]
-     (update-in settings [:options] (fnil conj []) [key val]))
+     (update-in settings [:options] (fnil conj []) [key (if (keyword? val) (name val) val)]))
   ([settings key val & more]
      (reduce (fn [ret [key val]]
                (set-option ret key val))

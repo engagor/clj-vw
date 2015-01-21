@@ -379,7 +379,7 @@ formatting, writing data files, passing options and calling vw, ...)."}
   {:long-name "--output_feature_regularizer_text"
    :doc "Per feature regularization output file, in text"})
 
-	
+
 
 ;;; Holdout options 
 
@@ -456,6 +456,10 @@ formatting, writing data files, passing options and calling vw, ...)."}
 (defoption :lrq-dropout
   {:long-name "--lrqdropout"
    :doc "use dropout training for low rank quadratic features"})
+
+(defoption :new-mf
+  {:long-name "--new_mf"
+   :doc "see https://groups.yahoo.com/neo/groups/vowpal_wabbit/conversations/topics/4683"})
 
 
 ;;; Binary

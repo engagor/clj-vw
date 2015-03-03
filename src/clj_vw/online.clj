@@ -39,15 +39,15 @@ vowpal wabbit running in daemon mode."}
                                       :pid-file (str "/tmp/.pid.vw." (java.util.UUID/randomUUID)))
            t (future (vw settings))]
        (Thread/sleep 500)
-       (loop [try 0]
+       (loop [i 0]
          (if-let [pid (try (clojure.string/trim (slurp (get-option settings :pid-file)))
                            (catch Exception e false))]
            (assoc settings :daemon {:thread t
                                     :host "localhost"
                                     :pid pid})
-           (if (< try 5) 
+           (if (< i 5) 
              (do (Thread/sleep 500)
-                 (recur (inc try)))
+                 (recur (inc i)))
              (do (future-cancel t)
                  (throw (Exception. "Unable to launch vw daemon.")))))))))
 

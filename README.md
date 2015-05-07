@@ -183,7 +183,7 @@ Higher level helper functions for interfacing to a local vowpal wabbit install.
   ```
   (-> (set-option :port 8003) 
       (daemon) 
-      (connect)).
+      (connect))
   ```
 
   As of version 1.1.0, it is possible to specify a connection timeout (in milliseconds):
@@ -191,10 +191,10 @@ Higher level helper functions for interfacing to a local vowpal wabbit install.
   ```
   (-> {}
       (set-connection-timeout 1000) 
-      (connect)).
+      (connect))
   ```
 
-  The default timeout is 1000. On timeout, a `java.net.SocketTimeoutException` is thrown.
+  The default timeout is 1000. On timeout a `java.net.SocketTimeoutException` is thrown.
 
 * `(train settings)`
 

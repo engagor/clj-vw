@@ -18,7 +18,7 @@ vowpal wabbit running in daemon mode."}
            [java.net Socket InetSocketAddress]
            [java.util UUID]))
 
-(defn- locking-send-and-recieve [client message timeout]
+(defn- locking-send-and-recieve [client message]
   (read-string 
    (locking client
      (doto ^java.io.PrintWriter (:out client)

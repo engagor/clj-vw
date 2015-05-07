@@ -15,10 +15,10 @@ vowpal wabbit running in daemon mode."}
              [shell :refer [sh]] 
              [io :refer :all]])
   (:import [java.io Writer BufferedReader PrintWriter InputStreamReader]
-           [java.net Socket]
+           [java.net Socket InetSocketAddress]
            [java.util UUID]))
 
-(defn- locking-send-and-recieve [client message]
+(defn- locking-send-and-recieve [client message timeout]
   (read-string 
    (locking client
      (doto ^java.io.PrintWriter (:out client)
@@ -74,12 +74,13 @@ vowpal wabbit running in daemon mode."}
                  (get-in settings [:daemon :port])
                  (get-option settings :port) 
                  26542)
-        socket (java.net.Socket. (str host) (long port))
-        in (java.io.BufferedReader. (java.io.InputStreamReader. (.getInputStream socket)))
-        out (java.io.PrintWriter. (.getOutputStream socket) true)]
+        socket-address (InetSocketAddress. (str host) (long 26542))
+        socket (java.net.Socket.)
+        timeout (or (:timeout settings) 1000)]
+    (.connect socket socket-address timeout)
     (-> settings
-        (assoc-in [:client :in] in)
-        (assoc-in [:client :out] out)
+        (assoc-in [:client :in] (java.io.BufferedReader. (java.io.InputStreamReader. (.getInputStream socket))))
+        (assoc-in [:client :out] (java.io.PrintWriter. (.getOutputStream socket) true))
         (assoc-in [:client :socket] socket)
         (assoc-in [:client :host] host)
         (assoc-in [:client :port] port))))

@@ -51,6 +51,11 @@ vowpal wabbit running in daemon mode."}
              (do (future-cancel t)
                  (throw (Exception. "Unable to launch vw daemon.")))))))))
 
+(defn set-connection-timeout
+  "Set connection timeout in milliseconds"
+  ([settings timeout]
+   (assoc-in settings [:client :timeout] timeout)))
+
 (defn connect 
   "Connect to a vw daemon. 
 
@@ -76,7 +81,7 @@ vowpal wabbit running in daemon mode."}
                  26542)
         socket-address (InetSocketAddress. (str host) (long 26542))
         socket (java.net.Socket.)
-        timeout (or (:timeout settings) 1000)]
+        timeout (or (get-in settings [:client :timeout]) 1000)]
     (.connect socket socket-address timeout)
     (-> settings
         (assoc-in [:client :in] (java.io.BufferedReader. (java.io.InputStreamReader. (.getInputStream socket))))

@@ -23,7 +23,7 @@ If you are using Maven, add the following repository definition to your pom.xml:
 With Leiningen:
 
 ```
-[engagor/clj-vw "1.0.1"]
+[engagor/clj-vw "1.1.0"]
 ```
 
 With Maven:
@@ -32,7 +32,7 @@ With Maven:
 <dependency>
   <groupId>engagor</groupId>
   <artifactId>clj-vw</artifactId>
-  <version>1.0.1</version>
+  <version>1.1.0</version>
 </dependency>
 ```
 
@@ -175,7 +175,7 @@ Higher level helper functions for interfacing to a local vowpal wabbit install.
   Host is determined as the value of either `(get-in settings [:client :host])`, `(get-in
   settings [:daemon :host])` or `"localhost"`, in this order.
 
- Port is determined as the value of either `(get-in settings [:client :port])`, `(get-in
+  Port is determined as the value of either `(get-in settings [:client :port])`, `(get-in
   settings [:daemon :port])`, `(get-option settings :port)` or `26542`, in this order.
 
   Example, to start a local daemon on port 8003 and connect to it, do:
@@ -185,6 +185,16 @@ Higher level helper functions for interfacing to a local vowpal wabbit install.
       (daemon) 
       (connect)).
   ```
+
+  As of version 1.1.0, it is possible to specify a connection timeout (in milliseconds):
+
+  ```
+  (-> {}
+      (set-connection-timeout 1000) 
+      (connect)).
+  ```
+
+  The default timeout is 1000. On timeout, a `java.net.SocketTimeoutException` is thrown.
 
 * `(train settings)`
 

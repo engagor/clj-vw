@@ -32,7 +32,7 @@ With Maven:
 <dependency>
   <groupId>engagor</groupId>
   <artifactId>clj-vw</artifactId>
-  <version>1.1.1</version>
+  <version>1.1.2</version>
 </dependency>
 ```
 

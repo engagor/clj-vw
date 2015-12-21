@@ -79,7 +79,7 @@ vowpal wabbit running in daemon mode."}
                  (get-in settings [:daemon :port])
                  (get-option settings :port) 
                  26542)
-        socket-address (InetSocketAddress. (str host) (long 26542))
+        socket-address (InetSocketAddress. (str host) (long port))
         socket (java.net.Socket.)
         timeout (or (get-in settings [:client :timeout]) 1000)]
     (.connect socket socket-address timeout)

@@ -29,10 +29,17 @@
 
       (is (= {:label 0.73842, :tag "ex1"}
              (first (:predictions (predict (add-example settings {:label 1 :tag "ex1" :features ["a"]})))))))
-  
+
     ;; (save (set-option settings :final-regressor "/tmp/test.model"))
-  
+
     (close settings)
 
     ))
 
+(deftest new-active-test
+
+  (let [settings-map (-> {}
+                         (set-option :active-learning true)
+                         (set-option :active-mellowness 5))
+        settings (connect (daemon settings-map))]
+    (close settings)))

@@ -8,7 +8,7 @@
 ;; You must not remove this notice, or any other, from this software.
 
 (ns ^{:doc "Core functionality for interacting with vowpal wabbit in a generic way (input example
-formatting, writing data files, passing options and calling vw, ...)."} 
+formatting, writing data files, passing options and calling vw, ...)."}
   clj-vw.core
   (:require [clojure.java [shell :refer [sh]] [io :refer :all]]
             [clojure.pprint :refer (print-table)])
@@ -52,7 +52,7 @@ formatting, writing data files, passing options and calling vw, ...)."}
 
 (defmacro ^{:private true} defoption [key {:keys [short-name long-name] :as cfg}]
   (assert (or short-name long-name))
-  `(swap! +options+ conj (assoc ~cfg 
+  `(swap! +options+ conj (assoc ~cfg
                            :key ~key)))
 
 (defn- option [key]
@@ -97,8 +97,8 @@ formatting, writing data files, passing options and calling vw, ...)."}
 ;;; Input options
 
 (defoption :data
-  {:short-name "-d" 
-   :long-name "--data" 
+  {:short-name "-d"
+   :long-name "--data"
    :doc "Example Set"})
 
 (defoption :ring-size
@@ -113,7 +113,7 @@ formatting, writing data files, passing options and calling vw, ...)."}
   {:long-name "--daemon"
    :doc "read data from port 26542"})
 
-(defoption :port 
+(defoption :port
   {:long-name "--port"
    :doc "port to listen on"})
 
@@ -125,12 +125,12 @@ formatting, writing data files, passing options and calling vw, ...)."}
   {:long-name "--pid_file"
    :doc "Write pid file in persistent daemon mode"})
 
-(defoption :passes 
+(defoption :passes
   {:long-name "--passes"
    :doc "Number of Training Passes"})
 
-(defoption :cache 
-  {:short-name "-c" 
+(defoption :cache
+  {:short-name "-c"
    :long-name "--cache"
    :doc "Use a cache.  The default is <data>.cache"})
 
@@ -138,7 +138,7 @@ formatting, writing data files, passing options and calling vw, ...)."}
   {:long-name "--cache_file"
    :doc "The location(s) of cache_file."})
 
-(defoption :compressed 
+(defoption :compressed
   {:long-name "--compressed"
    :doc "use gzip format whenever possible."})
 
@@ -146,25 +146,25 @@ formatting, writing data files, passing options and calling vw, ...)."}
   {:long-name "--no_stdin"
    :doc "do not default to reading from stdin"})
 
-(defoption :save-resume 
+(defoption :save-resume
   {:long-name "--save_resume"
    :doc "save extra state so learning can be resumed later with new data"})
 
 ;;; Output options
 
 (defoption :audit
-  {:short-name "-a" 
+  {:short-name "-a"
    :long-name "--audit"
    :doc "print weights of features"})
 
 (defoption :predictions
-  {:short-name "-p" 
+  {:short-name "-p"
    :long-name "--predictions"
    :doc "File to output predictions to"})
 
 (defoption :raw-preditions
-  {:short-name "-r" 
-   :long-name "--raw_predictions" 
+  {:short-name "-r"
+   :long-name "--raw_predictions"
    :doc "File to output unnormalized predictions to"})
 
 (defoption :sendto
@@ -176,7 +176,7 @@ formatting, writing data files, passing options and calling vw, ...)."}
    :doc "Don't output diagnostics"})
 
 (defoption :progress
-  {:short-name "-P" 
+  {:short-name "-P"
    :long-name "--progress"
    :doc "Progress update frequency. int: additive, float: multiplicative"})
 
@@ -192,16 +192,16 @@ formatting, writing data files, passing options and calling vw, ...)."}
 ;;; Example manipulation options
 
 (defoption :test-only
-  {:short-name "-t" 
+  {:short-name "-t"
    :long-name "--testonly"
    :doc "Ignore label information and just test"})
 
 (defoption :quadratic
-  {:short-name "-q" 
+  {:short-name "-q"
    :long-name "--quadratic"
    :doc "Create and use quadratic features"})
 
-(defoption :cubic 
+(defoption :cubic
   {:long-name "--cubic"
    :doc "Create and use cubic features"})
 
@@ -212,7 +212,7 @@ formatting, writing data files, passing options and calling vw, ...)."}
 (defoption :keep
   {:long-name "--keep"
    :doc "keep namespaces beginning with character <arg>"})
-                                 
+
 (defoption :holdout-off
   {:long-name "--holdout_off"
    :doc "no holdout data in multiple passes"})
@@ -230,7 +230,7 @@ formatting, writing data files, passing options and calling vw, ...)."}
    :doc "Don't add a constant feature"})
 
 (defoption :constant
-  {:short-name "-C" 
+  {:short-name "-C"
    :long-name "--constant"
    :doc "Set initial value of the constant feature to arg"})
 
@@ -289,7 +289,7 @@ formatting, writing data files, passing options and calling vw, ...)."}
    :doc "initial number of examples per pass"})
 
 (defoption :l1
-  {:long-name "--l1" 
+  {:long-name "--l1"
    :doc "l_1 lambda (L1 regularization)"})
 
 (defoption :l2
@@ -308,9 +308,9 @@ formatting, writing data files, passing options and calling vw, ...)."}
   {:long-name "--power_t"
    :doc "t power value"})
 
-(defoption :learning-rate 
-  {:short-name "-l" 
-   :long-name "--learning_rate" 
+(defoption :learning-rate
+  {:short-name "-l"
+   :long-name "--learning_rate"
    :doc "Set Learning Rate"})
 
 (defoption :loss-function
@@ -333,17 +333,17 @@ formatting, writing data files, passing options and calling vw, ...)."}
 ;;; Weight options
 
 (defoption :bit-precision
-  {:short-name "-b" 
-   :long-name "--bit_precision"                  
+  {:short-name "-b"
+   :long-name "--bit_precision"
    :doc "number of bits in the feature table"})
 
-(defoption :initial-regressor 
-  {:short-name "-i" 
-   :long-name "--initial_regressor"              
+(defoption :initial-regressor
+  {:short-name "-i"
+   :long-name "--initial_regressor"
    :doc "Initial regressor(s) to load into memory ( is filename)"})
 
 (defoption :final-regressor
-  {:short-name "-f" 
+  {:short-name "-f"
    :long-name "--final_regressor"
    :doc "Final regressor to save ( is filename)"})
 
@@ -381,7 +381,7 @@ formatting, writing data files, passing options and calling vw, ...)."}
 
 
 
-;;; Holdout options 
+;;; Holdout options
 
 (defoption :holdout-off
   {:long-name "--holdout_off"
@@ -523,15 +523,15 @@ formatting, writing data files, passing options and calling vw, ...)."}
 ;;; Active Learning options
 
 (defoption :active-learning
-  {:long-name "--active_learning"
-   :doc "active learning mode"})
+  {:long-name "--active"
+   :doc "active lqearning mode"})
 
 (defoption :active-simulation
   {:long-name "--active_simulation"
    :doc "active learning simulation mode"})
 
 (defoption :active-mellowness
-  {:long-name "--active_mellowness"
+  {:long-name "--mellowness"
    :doc "active learning mellowness parameter c_0. Default 8"})
 
 ;;; Parallelization options
@@ -567,8 +567,8 @@ formatting, writing data files, passing options and calling vw, ...)."}
 ;;; Learning algorithm / reduction options
 
 (defoption :bootstrap
-  {:short-name "-B" 
-   :long-name "--bootstrap"  
+  {:short-name "-B"
+   :long-name "--bootstrap"
    :doc "bootstrap mode with k rounds by online importance resampling"})
 
 (defoption :top
@@ -620,15 +620,15 @@ Example:
 
   See test suite for more examples.
 "
-  (str (if label          
+  (str (if label
          (format-label label)
          (clojure.string/join " " (map format-label labels)))
-       (when importance 
+       (when importance
          (str " " importance))
        (when tag
          (clean-string (str " " tag)))
        (clojure.string/trim (reduce (fn [ret [ns features]]
-                                      (str ret  
+                                      (str ret
                                            (apply str "|"
                                                   (format-namespace ns)
                                                   " "
@@ -637,7 +637,7 @@ Example:
                                     ""
                                     (group-by :namespace features)))))
 
-(defn add-example 
+(defn add-example
   "Add one ore more examples to settings."
   ([settings example]
      (update-in settings [:data] (fnil conj []) example))
@@ -650,7 +650,7 @@ Example:
   (print-table [:key :doc] @+options+)
   @+options+)
 
-(defn set-option 
+(defn set-option
   "Set one or more options. Can be chained, e.g.
 
   (def settings (-> {}
@@ -677,7 +677,7 @@ Example:
   (second (first (filter #(= key (first %))
                          (:options settings)))))
 
-(defn maybe-set-option 
+(defn maybe-set-option
   "Same as set-option but only when option is unset."
   ([settings key]
      (maybe-set-option settings key true))
@@ -691,7 +691,7 @@ Example:
              (maybe-set-option settings key val)
              (partition 2 more))))
 
-(defn remove-option 
+(defn remove-option
   "Remove an option from settings."
   ([settings key]
      (update-in settings [:options]
@@ -701,7 +701,7 @@ Example:
 
 
 
-(defn write-data-file 
+(defn write-data-file
   "Writes (:data settings), a collection of examples, to (get-option settings :data)."
   ([settings]
      (write-data-file settings {}))
@@ -710,12 +710,12 @@ Example:
      (assert (not (empty? (:data settings))))
      (with-open [wr ^Writer (apply writer (clojure.java.io/as-file (get-option settings :data))
                                    (flatten (seq writer-settings)))]
-       (doseq [e (:data settings)] 
+       (doseq [e (:data settings)]
          (.write wr ^java.lang.String (format-example e))
          (.write wr "\n")))
      settings))
 
-(defn vw-command 
+(defn vw-command
   "Returns the vw command as a string as defined by settings. Useful for inspecting the command that
   wille be issued when calling vw on settings."
   [settings]
@@ -733,7 +733,7 @@ Example:
       (throw (Exception. "vowpal wabbit segmentation fault")))))
 
 
-(defn read-predictions 
+(defn read-predictions
   "Read vowpal wabbit prediction file as specified by (get-option settings :predictions)."
   [settings]
   (let [predictions (with-open [rdr (clojure.java.io/reader (get-option settings :predictions))]
